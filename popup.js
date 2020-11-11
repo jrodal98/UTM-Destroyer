@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         if (pattern.test(text)) {
             // https://stackoverflow.com/a/51188719/9063770
-            alert(text.replace(/(\?)utm[^&]*(?:&utm[^&]*)*&(?=(?!utm[^\s&=]*=)[^\s&=]+=)|\?utm[^&]*(?:&utm[^&]*)*$|&utm[^&]*/gi, '$1'));
+            text = text.replace(/(\?)utm[^&]*(?:&utm[^&]*)*&(?=(?!utm[^\s&=]*=)[^\s&=]+=)|\?utm[^&]*(?:&utm[^&]*)*$|&utm[^&]*/gi, '$1');
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
         } else {
             alert("Invalid URL")
         }
