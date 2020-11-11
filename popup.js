@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         if (pattern.test(text)) {
-            alert("Valid URL");
+            alert(text.replace(/(\&)utm([_a-z0-9=]+)/g, ""));
         } else {
             alert("Invalid URL")
         }
