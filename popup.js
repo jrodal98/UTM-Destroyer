@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
         if (pattern.test(text)) {
-            alert(text.replace(/(\&)utm([_a-z0-9=]+)/g, ""));
+            // https://stackoverflow.com/a/51188719/9063770
+            alert(text.replace(/(\?)utm[^&]*(?:&utm[^&]*)*&(?=(?!utm[^\s&=]*=)[^\s&=]+=)|\?utm[^&]*(?:&utm[^&]*)*$|&utm[^&]*/gi, '$1'));
         } else {
             alert("Invalid URL")
         }
