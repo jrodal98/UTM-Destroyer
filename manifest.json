@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+ 
+    "name": "UTM Destroyer", 
+    "description": "No more tracking!",
+    "version": "1.0",
+    "author": "Vernon Andrade and Jake Rodal",
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html",
+        "default_title": "UTM Destroyer"
+    },
+    "permissions": [
+        "activeTab"
+    ]
+}
