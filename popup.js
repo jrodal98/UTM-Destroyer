@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var checkPageButton = document.getElementById('destroy');
-    checkPageButton.addEventListener('click', function() {
+    var destroyButton = document.getElementById('destroy');
+    var statsButton = document.getElementById('stats');
+    
+    destroyButton.addEventListener('click', function() {
         var original_url = document.getElementById('url').value;
         // https://stackoverflow.com/a/5717133/9063770
         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
@@ -9,13 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            
         if (pattern.test(original_url)) {
             // https://stackoverflow.com/a/51188719/9063770
             var text = original_url.replace(/(\?)utm[^&]*(?:&utm[^&]*)*&(?=(?!utm[^\s&=]*=)[^\s&=]+=)|\?utm[^&]*(?:&utm[^&]*)*$|&utm[^&]*/gi, '$1');
-
+            document.getElementById('url').value = "";
             if (text == original_url) {
                 return;
             }
+
             const el = document.createElement('textarea');
             el.value = text;
             document.body.appendChild(el);
@@ -24,14 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.removeChild(el);
 
             chrome.storage.sync.get({links: {}}, function(data) {
-                var getLocation = function(href) {
-                    var l = document.createElement("a");
-                    l.href = href;
-                    return l;
-                };
+                var pattern = /^((http|https|ftp):\/\/)/;
 
-                var hostname = getLocation(text).hostname;
+                if(!pattern.test(text)) {
+                    text = "http://" + text;
+                }
 
+                var hostname = (new URL(url)).hostname.replace('www.','');
+                
                 if (hostname in data.links) {
                     data.links[hostname]++;
                 } else {
@@ -39,17 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 chrome.storage.sync.set({links: data.links});
-
-                // temp logging
-                var object = data.links;
-                var output = '';
-                for (var property in object) {
-                    output += property + ': ' + object[property]+'; ';
-                }
-                alert(output);
             });
         } else {
             alert("Invalid URL")
         }
+    }, false);
+
+    statsButton.addEventListener('click', function() {
+        chrome.storage.sync.get({links: {}}, function(data) {
+            var object = data.links;
+            var output = '';
+            for (var property in object) {
+                output += property + ': ' + object[property]+'\n';
+            }
+            alert(output);
+        });
     }, false);
 }, false);
