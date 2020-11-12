@@ -10,7 +10,18 @@
         "default_popup": "popup.html",
         "default_title": "UTM Destroyer"
     },
+    "content_scripts": [
+        {
+        "matches": [
+            "http://*/*",
+            "https://*/*"
+        ],
+        "js": ["testScript.js"]
+        }
+    ],
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "clipboardRead",
+        "clipboardWrite"
     ]
 }

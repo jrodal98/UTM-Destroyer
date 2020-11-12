@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
+            document.getElementById('url').value = "";
         } else {
             alert("Invalid URL")
         }
