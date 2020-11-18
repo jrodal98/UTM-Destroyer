@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     var destroyButton = document.getElementById('destroy');
     var statsButton = document.getElementById('stats');
-    
+    var csvButton = document.getElementById('csv');
+
     destroyButton.addEventListener('click', function() {
         var original_url = document.getElementById('url').value;
         // https://stackoverflow.com/a/5717133/9063770
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-            
+
         if (pattern.test(original_url)) {
             // https://stackoverflow.com/a/51188719/9063770
             var text = original_url.replace(/(\?)utm[^&]*(?:&utm[^&]*)*&(?=(?!utm[^\s&=]*=)[^\s&=]+=)|\?utm[^&]*(?:&utm[^&]*)*$|&utm[^&]*/gi, '$1');
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 var hostname = (new URL(url)).hostname.replace('www.','');
-                
+
                 if (hostname in data.links) {
                     data.links[hostname]++;
                 } else {
@@ -57,6 +58,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 output += property + ': ' + object[property]+'\n';
             }
             alert(output);
+        });
+    }, false);
+
+
+    csvButton.addEventListener('click', function() {
+        chrome.storage.sync.get({links: {}}, function(data) {
+            var object = data.links;
+            // https://stackoverflow.com/a/14966131/9063770
+            let csvContent = "data:text/csv;charset=utf-8,hostname,number of times stripped\n";
+            for (var property in object) {
+                csvContent += property + ',' + object[property]+'\n';
+            }
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "utm_stripping_data.csv");
+            document.body.appendChild(link); // Required for FF
+
+            link.click(); // This will download the data file named "my_data.csv".
         });
     }, false);
 }, false);
