@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var destroyButton = document.getElementById('destroy');
     var statsButton = document.getElementById('stats');
     var csvButton = document.getElementById('csv');
+    var clearButton = document.getElementById('clear');
 
     destroyButton.addEventListener('click', function() {
         var original_url = document.getElementById('url').value;
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     text = "http://" + text;
                 }
 
-                var hostname = (new URL(url)).hostname.replace('www.','');
+                var hostname = (new URL(text)).hostname.replace('www.','');
 
                 if (hostname in data.links) {
                     data.links[hostname]++;
@@ -61,6 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, false);
 
+
+    clearButton.addEventListener('click', function() {
+        chrome.storage.sync.clear(function(obj){
+            alert("storage cleared.");
+        });}, false);
 
     csvButton.addEventListener('click', function() {
         chrome.storage.sync.get({links: {}}, function(data) {
